@@ -29,7 +29,7 @@ Add to your project's `pom.xml`:
     <dependency>
         <groupId>io.github.clojang</groupId>
         <artifactId>clojog</artifactId>
-        <version>0.1.5</version>
+        <version>0.1.6</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ Add to your `build.gradle`:
 
 ```gradle
 dependencies {
-    implementation 'io.github.clojang:clojog:0.1.5'
+    implementation 'io.github.clojang:clojog:0.1.6'
 }
 ```
 
