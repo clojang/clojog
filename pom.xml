@@ -156,7 +156,30 @@
                     <tokenAuth>true</tokenAuth>
                 </configuration>
             </plugin>
-
+            <!-- Exec plugin for running demo -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <mainClass>io.github.clojang.clojog.demo.DemoApp</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <!-- GitHub Packages publishing profile -->
+        <profile>
+            <id>github-packages</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/clojang/clojog</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
