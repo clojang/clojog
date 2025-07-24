@@ -42,6 +42,7 @@
         <logback.version>1.5.13</logback.version>
         <jansi.version>2.4.1</jansi.version>
         <junit.version>5.10.1</junit.version>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
@@ -76,6 +77,14 @@
     </dependencies>
 
     <build>
+        <!-- Enable resource filtering for git properties -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -96,6 +105,40 @@
                     <systemPropertyVariables>
                         <jansi.disable>true</jansi.disable>
                     </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <!-- Git Commit ID Plugin for build info -->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>7.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.branch$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <offline>true</offline>
+                    <skip>${maven.gitcommitid.skip}</skip>
+                    <skipPoms>false</skipPoms>
+                    <gitDescribe>
+                        <skip>true</skip>
+                    </gitDescribe>
+                    <verbose>false</verbose>
                 </configuration>
             </plugin>
 

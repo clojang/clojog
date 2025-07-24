@@ -9,7 +9,10 @@ import io.github.clojang.clojog.exceptions.ClojogExceptions;
 import org.slf4j.LoggerFactory;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Properties;
 
 /**
  * Clojog provides simple setup and configuration for structured, colored logging.
@@ -51,13 +54,28 @@ import java.io.PrintStream;
  */
 public class Clojog {
     
-    private static final String VERSION = "0.1.6";
-    private static final String BUILD_DATE = getBuildDate();
-    private static final String GIT_COMMIT = getGitCommit();
-    private static final String GIT_BRANCH = getGitBranch();
-    private static final String GIT_SUMMARY = getGitSummary();
+    private static final String VERSION = "0.1.0";  // Fixed version to match pom.xml
+    private static final String BUILD_DATE;
+    private static final String GIT_COMMIT;
+    private static final String GIT_BRANCH;
+    
+    static {
+        Properties gitProps = new Properties();
+        try (InputStream is = Clojog.class.getResourceAsStream("/git.properties")) {
+            if (is != null) {
+                gitProps.load(is);
+            }
+        } catch (IOException e) {
+            // Ignore - use defaults
+        }
+        
+        BUILD_DATE = gitProps.getProperty("git.build.time", "unknown");
+        GIT_COMMIT = gitProps.getProperty("git.commit.id.abbrev", "unknown");
+        GIT_BRANCH = gitProps.getProperty("git.branch", "unknown");
+    }
     
     private static boolean isInitialized = false;
+    private static boolean ansiInstalled = false;
     
     /**
      * Sets up the clojog logger with the specified options.
@@ -72,17 +90,14 @@ public class Clojog {
      * @throws ClojogExceptions.NotImplementedException if filesystem output is requested
      */
     public static void setupLogging(ClojogOptions options) {
-        if (isInitialized) {
-            return; // Prevent multiple initialization
-        }
-        
-        // Enable ANSI colors on Windows
-        if (options.isColored()) {
+        // Enable ANSI colors on Windows (only install once)
+        if (options.isColored() && !ansiInstalled) {
             AnsiConsole.systemInstall();
+            ansiInstalled = true;
         }
         
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.reset(); // Clear any existing configuration
+        context.reset(); // Clear any existing configuration - this allows reconfiguration
         
         // Create console appender
         ConsoleAppender<ch.qos.logback.classic.spi.ILoggingEvent> appender = 
@@ -110,11 +125,12 @@ public class Clojog {
         formatter.start();
         
         // Set the formatter on the appender
-        appender.setLayout(formatter);
+        appender.setEncoder(formatter);
         appender.start();
         
         // Configure root logger
         Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        rootLogger.detachAndStopAllAppenders(); // Ensure we clear previous appenders
         rootLogger.addAppender(appender);
         
         // Set log level
@@ -125,11 +141,12 @@ public class Clojog {
             throw new ClojogExceptions.InvalidLogLevelException(options.getLevel(), e);
         }
         
-        isInitialized = true;
-        
-        // Log initialization message
-        org.slf4j.Logger log = LoggerFactory.getLogger(Clojog.class);
-        log.info("Logging initialized.");
+        // Only log initialization message on first setup
+        if (!isInitialized) {
+            isInitialized = true;
+            org.slf4j.Logger log = LoggerFactory.getLogger(Clojog.class);
+            log.info("Logging initialized.");
+        }
     }
     
     /**
@@ -152,7 +169,7 @@ public class Clojog {
      * @return a build string containing git branch, commit, and build date
      */
     public static String getBuildInfo() {
-        if (GIT_COMMIT == null || GIT_COMMIT.isEmpty()) {
+        if ("unknown".equals(GIT_COMMIT)) {
             return "N/A";
         }
         return String.format("%s@%s, %s", GIT_BRANCH, GIT_COMMIT, BUILD_DATE);
@@ -163,25 +180,5 @@ public class Clojog {
      */
     public static boolean isInitialized() {
         return isInitialized;
-    }
-    
-    // These methods would typically be populated by build-time processing
-    // For now, they return placeholder values
-    
-    private static String getBuildDate() {
-        // This would be populated by Maven filtering or similar build-time processing
-        return System.getProperty("clojog.build.date", "unknown");
-    }
-    
-    private static String getGitCommit() {
-        return System.getProperty("clojog.git.commit", "unknown");
-    }
-    
-    private static String getGitBranch() {
-        return System.getProperty("clojog.git.branch", "unknown");
-    }
-    
-    private static String getGitSummary() {
-        return System.getProperty("clojog.git.summary", "unknown");
     }
 }

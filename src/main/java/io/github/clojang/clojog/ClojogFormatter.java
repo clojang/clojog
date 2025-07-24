@@ -2,16 +2,18 @@ package io.github.clojang.clojog;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.LayoutBase;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.encoder.EncoderBase;
 import org.fusesource.jansi.Ansi;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
- * Custom formatter for clojog that provides colored output and structured formatting.
+ * Custom encoder for clojog that provides colored output and structured formatting.
  * 
  * The formatter outputs logs in the following formats:
  * 
@@ -23,7 +25,7 @@ import java.util.Map;
  * 
  * Any MDC (Mapped Diagnostic Context) data is appended as key-value pairs.
  */
-public class ClojogFormatter extends LayoutBase<ILoggingEvent> {
+public class ClojogFormatter extends EncoderBase<ILoggingEvent> {
     
     private final boolean disableColors;
     private final boolean reportCaller;
@@ -41,6 +43,20 @@ public class ClojogFormatter extends LayoutBase<ILoggingEvent> {
     }
     
     @Override
+    public byte[] encode(ILoggingEvent event) {
+        return doLayout(event).getBytes(StandardCharsets.UTF_8);
+    }
+    
+    @Override
+    public byte[] headerBytes() {
+        return new byte[0];
+    }
+    
+    @Override
+    public byte[] footerBytes() {
+        return new byte[0];
+    }
+    
     public String doLayout(ILoggingEvent event) {
         StringBuilder sb = new StringBuilder();
         
