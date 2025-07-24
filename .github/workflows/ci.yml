@@ -38,7 +38,7 @@ jobs:
       run: mvn clean test -Dmaven.gpg.skip=true
       
     - name: Generate test report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v2
       if: success() || failure()
       with:
         name: Maven Tests (${{ matrix.java }} on ${{ matrix.os }})
