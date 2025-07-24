@@ -168,8 +168,10 @@ jobs:
           chmod 700 ~/.gnupg
           
           # Configure GPG for batch mode
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "use-agent" >> ~/.gnupg/gpg.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          chmod 600 ~/.gnupg/*
           
           # Import the private key
           echo "$GPG_PRIVATE_KEY" | gpg --batch --import
@@ -186,11 +188,18 @@ jobs:
           echo "KEY_FINGERPRINT=$KEY_FINGERPRINT" >> $GITHUB_ENV
           
           # Trust the key
-          echo -e "5\ny\n" | gpg --batch --command-fd 0 --expert --edit-key $GPG_KEY_ID trust
+          echo -e "trust\n5\ny\n" | gpg --batch --command-fd 0 --edit-key $GPG_KEY_ID
           
-          # Restart gpg-agent
+          # Configure Git to use this key
+          git config --global user.signingkey $GPG_KEY_ID
+          
+          # Kill and restart gpg-agent
           gpgconf --kill gpg-agent
           gpgconf --launch gpg-agent
+          
+          # Test the key
+          echo "Testing GPG key..."
+          echo "test" | gpg --batch --yes --armor --detach-sign --default-key $GPG_KEY_ID || echo "GPG test failed"
 
       - name: Debug GPG setup (remove in production)
         run: |
@@ -203,9 +212,14 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          mvn clean deploy -DskipTests -Psign-artifacts \
+          # Export GPG TTY
+          export GPG_TTY=$(tty)
+          
+          # Use environment variable for passphrase instead of command line
+          export MAVEN_GPG_PASSPHRASE="${{ secrets.GPG_PASSPHRASE }}"
+          
+          mvn clean deploy -DskipTests -Pmaven-central,sign-artifacts \
             -Dgpg.keyname=${{ env.GPG_KEY_ID }} \
-            -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}" \
             -Dmaven.gpg.skip=false
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
@@ -241,7 +255,7 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-          mvn clean deploy -DskipTests -P github-packages -Dmaven.gpg.skip=true -Dcentral.publishing.skip=true
+          mvn clean deploy -DskipTests -Pgithub-packages -Dmaven.gpg.skip=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
