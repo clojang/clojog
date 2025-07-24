@@ -259,16 +259,9 @@
             </distributionManagement>
         </profile>
 
-        <!-- GPG Signing profile (only activated for releases) -->
+        <!-- GPG Signing profile -->
         <profile>
             <id>sign-artifacts</id>
-            <activation>
-                <property>
-                    <!-- Only activate when explicitly requested -->
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -282,6 +275,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
