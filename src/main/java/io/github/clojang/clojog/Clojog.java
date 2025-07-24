@@ -54,13 +54,25 @@ import java.util.Properties;
  */
 public class Clojog {
     
-    private static final String VERSION = "0.1.0";  // Fixed version to match pom.xml
+    private static final String VERSION;
     private static final String BUILD_DATE;
     private static final String GIT_COMMIT;
     private static final String GIT_BRANCH;
     
     static {
+        Properties versionProps = new Properties();
         Properties gitProps = new Properties();
+        
+        // Load version information from Maven-filtered properties
+        try (InputStream is = Clojog.class.getResourceAsStream("/version.properties")) {
+            if (is != null) {
+                versionProps.load(is);
+            }
+        } catch (IOException e) {
+            // Ignore - use defaults
+        }
+        
+        // Load git information
         try (InputStream is = Clojog.class.getResourceAsStream("/git.properties")) {
             if (is != null) {
                 gitProps.load(is);
@@ -69,7 +81,11 @@ public class Clojog {
             // Ignore - use defaults
         }
         
-        BUILD_DATE = gitProps.getProperty("git.build.time", "unknown");
+        // Version comes from Maven project version
+        VERSION = versionProps.getProperty("project.version", "unknown");
+        
+        // Git info comes from git-commit-id plugin
+        BUILD_DATE = gitProps.getProperty("git.build.time", versionProps.getProperty("maven.build.timestamp", "unknown"));
         GIT_COMMIT = gitProps.getProperty("git.commit.id.abbrev", "unknown");
         GIT_BRANCH = gitProps.getProperty("git.branch", "unknown");
     }
@@ -162,7 +178,7 @@ public class Clojog {
      * @return the version string of the clojog library
      */
     public static String getVersion() {
-        return VERSION != null && !VERSION.isEmpty() ? VERSION : "N/A";
+        return VERSION;
     }
     
     /**
