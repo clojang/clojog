@@ -34,17 +34,17 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Build project
-      run: mvn clean compile -Dmaven.gpg.skip=true
+      run: mvn clean compile
       
     - name: Run demo application
-      run: mvn compile exec:java -Dexec.mainClass="io.github.clojang.clojog.demo.DemoApp" -Dexec.cleanupDaemonThreads=false -Dmaven.gpg.skip=true
+      run: mvn compile exec:java -Dexec.mainClass="io.github.clojang.clojog.demo.DemoApp" -Dexec.cleanupDaemonThreads=false
       
     - name: Capture demo output
       if: runner.os == 'Linux'
       run: |
         echo "## Demo Output on Ubuntu" >> demo_output.md
         echo '```' >> demo_output.md
-        mvn compile exec:java -Dexec.mainClass="io.github.clojang.clojog.demo.DemoApp" -Dexec.cleanupDaemonThreads=false -q -Dmaven.gpg.skip=true >> demo_output.md 2>&1 || true
+        mvn compile exec:java -Dexec.mainClass="io.github.clojang.clojog.demo.DemoApp" -Dexec.cleanupDaemonThreads=false -q >> demo_output.md 2>&1 || true
         echo '```' >> demo_output.md
         
     - name: Upload demo output
