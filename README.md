@@ -1,5 +1,9 @@
 # clojog
 
+[![Build Status][gh-actions-badge]][gh-actions]
+
+[![Project Logo][logo]][logo-large]
+
 *A simple wrapper for customized SLF4J/Logback usage with colored output*
 
 This is a Java port of the original Go zylog library, providing the same clean, colored logging interface for Java applications.
@@ -215,6 +219,9 @@ The goal is to provide clean, readable, structured logging across different plat
 
 Licensed under the Apache License, Version 2.0. See `LICENSE` file for details.
 
-## Contributing
+[//]: ---Named-Links---
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+[logo]: resources/images/logo.jpg
+[logo-large]: resources/images/logo-large.jpg
+[gh-actions-badge]: https://github.com/clojang/clojog/workflows/CI/badge.svg
+[gh-actions]: https://github.com/clojang/clojog/actions?query=workflow%3ACI
