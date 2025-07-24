@@ -77,12 +77,15 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Build project
+      shell: bash
       run: mvn clean compile -Dmaven.gpg.skip=true
       
     - name: Package JAR
+      shell: bash
       run: mvn package -DskipTests -Dmaven.gpg.skip=true
       
     - name: Generate Javadoc
+      shell: bash
       run: mvn javadoc:javadoc -Dmaven.gpg.skip=true
       
     - name: Upload build artifacts
@@ -127,6 +130,7 @@ jobs:
         restore-keys: ${{ runner.os }}-sonar
         
     - name: Run SonarCloud analysis
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -160,6 +164,7 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Run OWASP Dependency Check
+      shell: bash
       run: mvn org.owasp:dependency-check-maven:check -Dmaven.gpg.skip=true
       
     - name: Upload dependency check results

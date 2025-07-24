@@ -47,6 +47,7 @@ jobs:
         queries: security-extended,security-and-quality
 
     - name: Build project
+      shell: bash
       run: |
         mvn clean compile -DskipTests
 
