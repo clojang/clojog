@@ -258,7 +258,8 @@
             <id>sign-artifacts</id>
             <activation>
                 <property>
-                    <name>gpg.sign</name>
+                    <!-- Only activate when explicitly requested -->
+                    <name>performRelease</name>
                     <value>true</value>
                 </property>
             </activation>

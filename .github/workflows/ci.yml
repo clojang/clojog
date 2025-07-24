@@ -34,7 +34,7 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Run tests
-      run: mvn clean test -Dgpg.skip=true
+      run: mvn clean test -Dmaven.gpg.skip=true
       
     - name: Generate test report
       uses: dorny/test-reporter@v1
@@ -76,13 +76,13 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Build project
-      run: mvn clean compile -Dgpg.skip=true
+      run: mvn clean compile -Dmaven.gpg.skip=true
       
     - name: Package JAR
-      run: mvn package -DskipTests -Dgpg.skip=true
+      run: mvn package -DskipTests -Dmaven.gpg.skip=true
       
     - name: Generate Javadoc
-      run: mvn javadoc:javadoc -Dgpg.skip=true
+      run: mvn javadoc:javadoc -Dmaven.gpg.skip=true
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -133,7 +133,8 @@ jobs:
         mvn clean verify sonar:sonar \
           -Dsonar.projectKey=clojang_clojog \
           -Dsonar.organization=clojang \
-          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dmaven.gpg.skip=true
 
   security:
     name: Security Scan
@@ -158,7 +159,7 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Run OWASP Dependency Check
-      run: mvn org.owasp:dependency-check-maven:check
+      run: mvn org.owasp:dependency-check-maven:check -Dmaven.gpg.skip=true
       
     - name: Upload dependency check results
       uses: actions/upload-artifact@v4

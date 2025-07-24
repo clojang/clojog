@@ -35,13 +35,13 @@ jobs:
           ${{ runner.os }}-maven-
           
     - name: Validate project
-      run: mvn clean validate
+      run: mvn clean validate -Dmaven.gpg.skip=true
       
     - name: Run full test suite
-      run: mvn test
+      run: mvn test -Dmaven.gpg.skip=true
       
     - name: Verify package can be built
-      run: mvn package -DskipTests
+      run: mvn package -DskipTests -Dmaven.gpg.skip=true
 
   release:
     name: Create Release
@@ -87,9 +87,9 @@ jobs:
         
     - name: Build release artifacts
       run: |
-        mvn clean package -DskipTests
-        mvn source:jar
-        mvn javadoc:jar
+        mvn clean package -DskipTests -Dmaven.gpg.skip=true
+        mvn source:jar -Dmaven.gpg.skip=true
+        mvn javadoc:jar -Dmaven.gpg.skip=true
         
     - name: Create release notes
       id: release_notes
@@ -163,7 +163,7 @@ jobs:
         
     - name: Publish to Maven Central
       run: |
-        mvn clean deploy -DskipTests
+        mvn clean deploy -DskipTests -Dgpg.sign=true
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
@@ -198,7 +198,7 @@ jobs:
         
     - name: Publish to GitHub Packages
       run: |
-        mvn clean deploy -DskipTests -P github-packages
+        mvn clean deploy -DskipTests -P github-packages -Dmaven.gpg.skip=true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -227,7 +227,7 @@ jobs:
     - name: Generate Javadoc
       run: |
         mvn versions:set -DnewVersion=${{ needs.release.outputs.version }} -DgenerateBackupPoms=false
-        mvn javadoc:javadoc
+        mvn javadoc:javadoc -Dmaven.gpg.skip=true
         
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
