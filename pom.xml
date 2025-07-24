@@ -180,11 +180,12 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.4.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                     <tokenAuth>true</tokenAuth>
+                    <skipPublishing>${central.publishing.skip}</skipPublishing>
                 </configuration>
             </plugin>
 
@@ -257,6 +258,10 @@
                     <url>https://maven.pkg.github.com/clojang/clojog</url>
                 </repository>
             </distributionManagement>
+            <properties>
+                <!-- Skip central publishing when using GitHub Packages -->
+                <central.publishing.skip>true</central.publishing.skip>
+            </properties>
         </profile>
 
         <!-- GPG Signing profile -->
