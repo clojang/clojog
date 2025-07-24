@@ -16,24 +16,44 @@ This is a Java port of the original Go zylog library, providing the same clean, 
 
 ## Installation
 
-### Maven
+### Maven Dependency
 
-Add this dependency to your `pom.xml`:
+Add to your project's `pom.xml`:
 
 ```xml
-<dependency>
-    <groupId>io.github.clojang</groupId>
-    <artifactId>clojog</artifactId>
-    <version>0.1.6</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>io.github.clojang</groupId>
+        <artifactId>clojog</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+</dependencies>
 ```
 
-### Gradle
+### Gradle Dependency
 
-Add this to your `build.gradle`:
+Add to your `build.gradle`:
 
 ```gradle
-implementation 'io.github.clojang:clojog:0.1.6'
+dependencies {
+    implementation 'io.github.clojang:clojog:0.1.0'
+}
+```
+
+### SBT Dependency (Scala)
+
+Add to your `build.sbt`:
+
+```scala
+libraryDependencies += "io.github.clojang" % "clojog" % "0.1.0"
+```
+
+### Leiningen Dependency (Clojure)
+
+Add to your `project.clj`:
+
+```clojure
+:dependencies [[io.github.clojang/clojog "0.1.0"]]
 ```
 
 ## Quick Start
@@ -191,7 +211,7 @@ The goal is to provide clean, readable, structured logging across different plat
 
 ## License
 
-© 2024, clojog Java Project
+© 2025, Clojang. All rights reserved.
 
 Licensed under the Apache License, Version 2.0. See `LICENSE` file for details.
 
