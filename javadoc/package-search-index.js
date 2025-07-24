@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.clojang.clojog"},{"l":"io.github.clojang.clojog.demo"},{"l":"io.github.clojang.clojog.exceptions"}];updateSearchResults();
