@@ -127,22 +127,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!-- GPG plugin for signing (needed for Maven Central) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <configuration>
+                    <source>11</source>
+                    <doclint>none</doclint>
+                </configuration>
             </plugin>
 
             <!-- Central publishing plugin -->
@@ -156,6 +144,47 @@
                     <tokenAuth>true</tokenAuth>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo for code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- OWASP Dependency Check -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>9.0.7</version>
+                <configuration>
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <skipProvidedScope>true</skipProvidedScope>
+                    <skipRuntimeScope>false</skipRuntimeScope>
+                </configuration>
+            </plugin>
+
+            <!-- SonarCloud integration -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.10.0.2594</version>
+            </plugin>
+
             <!-- Exec plugin for running demo -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -168,7 +197,6 @@
         </plugins>
     </build>
 
-
     <profiles>
         <!-- GitHub Packages publishing profile -->
         <profile>
@@ -180,6 +208,35 @@
                     <url>https://maven.pkg.github.com/clojang/clojog</url>
                 </repository>
             </distributionManagement>
+        </profile>
+
+        <!-- GPG Signing profile (only activated for releases) -->
+        <profile>
+            <id>sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>gpg.sign</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
