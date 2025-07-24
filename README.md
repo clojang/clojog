@@ -170,6 +170,7 @@ Run the demo to see clojog in action:
 ```bash
 mvn compile exec:java -Dexec.mainClass="io.github.clojang.clojog.demo.DemoApp"
 ```
+[![Demo screenshot][screenshot]][screenshot]
 
 ## Integration with Configuration Libraries
 
@@ -223,5 +224,6 @@ Licensed under the Apache License, Version 2.0. See `LICENSE` file for details.
 
 [logo]: resources/images/logo.jpg
 [logo-large]: resources/images/logo-large.jpg
+[screenshot]: resources/images/demo-screenshot.png
 [gh-actions-badge]: https://github.com/clojang/clojog/workflows/CI/badge.svg
 [gh-actions]: https://github.com/clojang/clojog/actions?query=workflow%3ACI
