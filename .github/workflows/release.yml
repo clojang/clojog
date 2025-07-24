@@ -160,24 +160,16 @@ jobs:
           mvn versions:set -DnewVersion=${{ needs.release.outputs.version }} -DgenerateBackupPoms=false
 
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          # Disable Git configuration to avoid issues
-          git_user_signingkey: false
-          git_commit_gpgsign: false
-          git_tag_gpgsign: false
-          git_push_gpgsign: false
-
-      - name: List GPG keys for verification
         run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          
+          # List keys to verify import
+          echo "Imported GPG keys:"
           gpg --list-secret-keys --keyid-format LONG
 
       - name: Publish to Maven Central
         run: |
-          mvn clean deploy -DskipTests -Pmaven-central,sign-artifacts \
-            -Dmaven.gpg.skip=false
+          mvn clean deploy -DskipTests -Pmaven-central,sign-artifacts
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
