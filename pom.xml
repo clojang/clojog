@@ -7,7 +7,7 @@
 
     <groupId>io.github.clojang</groupId>
     <artifactId>clojog</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
     <packaging>jar</packaging>
 
     <name>Clojog</name>
@@ -296,10 +296,14 @@
                                         <arg>loopback</arg>
                                         <arg>--batch</arg>
                                         <arg>--yes</arg>
+                                        <arg>--no-tty</arg>
                                     </gpgArguments>
                                     <!-- Use keyname from command line if provided -->
                                     <keyname>${gpg.keyname}</keyname>
-                                    <!-- Don't use passphrase parameter, rely on env var MAVEN_GPG_PASSPHRASE -->
+                                    <!-- Use passphrase if provided -->
+                                    <passphrase>${gpg.passphrase}</passphrase>
+                                    <!-- Use default key if no keyname specified -->
+                                    <useDefaultKey>true</useDefaultKey>
                                     <!-- Skip if no key is configured -->
                                     <skip>${maven.gpg.skip}</skip>
                                 </configuration>
