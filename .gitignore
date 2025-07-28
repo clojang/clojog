@@ -19,3 +19,5 @@ dependency-reduced-pom.xml
 .DS_Store
 Thumbs.db
 
+# AI
+.claude

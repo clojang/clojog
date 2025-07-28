@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -84,8 +84,18 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        
+
         <plugins>
+            <plugin>
+                <groupId>io.github.clojang</groupId>
+                <artifactId>sophodromos</artifactId>
+                <version>0.1.7</version>
+                <configuration>
+                    <colorOutput>true</colorOutput>
+                    <showProgress>true</showProgress>
+                    <detailedFailures>true</detailedFailures>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -96,17 +106,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.3</version>
-                <configuration>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                    <systemPropertyVariables>
-                        <jansi.disable>true</jansi.disable>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
 
             <!-- Git Commit ID Plugin for build info -->
             <plugin>
