@@ -52,7 +52,7 @@ jobs:
         
     - name: Upload demo output
       if: runner.os == 'Linux'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: demo-output-${{ matrix.os }}
         path: demo_output.md
